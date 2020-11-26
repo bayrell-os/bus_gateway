@@ -142,10 +142,10 @@ class App:
 		future = loop.create_future()
 		self.futures[correlation_id] = future
 		
-		app_name = "Bayrell.CloudOS"
-		interface_name = "default"
-		object_name = "Bayrell.CloudOS.Balancer"
-		method_name = "getUsers"
+		app_name = request.match_info.get("app_name", "")
+		interface_name = request.match_info.get("interface_name", "default")
+		object_name = request.match_info.get("object_name", "")
+		method_name = request.match_info.get("method_name", "")
 		data = None
 		
 		try:
@@ -181,7 +181,6 @@ class App:
 			try:
 				
 				await asyncio.wait_for( future, timeout=(AMQP_RESPONSE_TIME + AMQP_MESSAGE_TTL + 2000) / 1000 )
-				#await asyncio.wait_for( future, timeout=1 )
 				res = self.response(res, str(future.result()))
 				
 			except asyncio.TimeoutError:
