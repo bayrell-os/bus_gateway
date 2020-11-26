@@ -1,0 +1,39 @@
+version: "3.7"
+
+services:
+    
+    bus_gateway:
+        image: bayrell/bus_gateway:0.1.0-20201126_112005
+        hostname: "{{.Service.Name}}.{{.Task.ID}}.local"
+        volumes:
+            - "../src:/var/www"
+        env_file:
+            - ./env.conf
+        deploy:
+            replicas: 1
+            endpoint_mode: dnsrr
+            update_config:
+                parallelism: 1
+                failure_action: rollback
+                delay: 5s
+            restart_policy:
+                condition: "on-failure"
+                delay: 10s
+                window: 120s
+            placement:
+                constraints:
+                    - node.labels.name == docker0
+        networks:
+            - backend
+            - cloud_router
+        logging:
+            driver: journald
+
+networks:
+    
+    cloud_router:
+        external: true
+    
+    backend:
+        driver: overlay
+        attachable: true
