@@ -25,11 +25,15 @@ services:
                     - node.labels.name == docker0
         networks:
             - backend
+            - cloud_admin
             - cloud_router
         logging:
             driver: journald
 
 networks:
+    
+    cloud_admin:
+        external: true
     
     cloud_router:
         external: true

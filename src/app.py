@@ -88,7 +88,7 @@ class App:
 			
 			# Create temporary queue
 			self.amqp_callback_queue = await self.amqp_channel.declare_queue(exclusive=True)
-			await self.amqp_callback_queue.consume(self.on_response)
+			await self.amqp_callback_queue.consume(self.on_response, no_ack=True)
 			
 			print("Connect to RabbitMQ")
 			
