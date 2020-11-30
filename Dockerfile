@@ -8,4 +8,10 @@ RUN apk add python3 python3-dev gcc musl-dev; \
 	rm -rf /var/cache/apk/*; \
 	echo "Ok"
 
+ADD files /src/files
+RUN cd ~; \
+	cp -rf /src/files/etc/* /etc/; \
+	rm -rf /src/files; \
+	echo "Ok"
+	
 ADD src /var/www

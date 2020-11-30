@@ -3,7 +3,7 @@ version: "3.7"
 services:
     
     bus_gateway:
-        image: bayrell/bus_gateway:0.1.0-20201126_112005
+        image: bayrell/bus_gateway:0.1.0-20201126_142630
         hostname: "{{.Service.Name}}.{{.Task.ID}}.local"
         volumes:
             - "../src:/var/www"

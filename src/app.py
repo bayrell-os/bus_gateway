@@ -147,6 +147,22 @@ class App:
 		object_name = request.match_info.get("object_name", "")
 		method_name = request.match_info.get("method_name", "")
 		data = None
+		time = None
+		sign = None
+		
+		post = await request.post()
+		
+		if "data" in post:
+			try:
+				data = json.loads(post["data"])
+			except BaseException as err:
+				pass
+		
+		if "time" in post:
+			time = post["time"]
+			
+		if "sign" in post:
+			sign = post["sign"]
 		
 		try:
 			
@@ -168,6 +184,8 @@ class App:
 						"object_name": object_name,
 						"method_name": method_name,
 						"data": data,
+						"time": time,
+						"sign": sign,
 					})).encode(),
 					content_type = "text/plain",
 					expiration = AMQP_MESSAGE_TTL,
