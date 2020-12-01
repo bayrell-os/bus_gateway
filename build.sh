@@ -5,7 +5,7 @@ SCRIPT_PATH=`dirname $SCRIPT`
 BASE_PATH=`dirname $SCRIPT_PATH`
 
 RETVAL=0
-VERSION=0.1.0
+VERSION=0.2.0
 TAG=`date '+%Y%m%d_%H%M%S'`
 
 case "$1" in
@@ -17,15 +17,18 @@ case "$1" in
 	
 	amd64)
 		docker build ./ -t bayrell/bus_gateway:$VERSION-amd64 --file Dockerfile --build-arg ARCH=-amd64
-		docker push bayrell/bus_gateway:$VERSION-amd64
 	;;
 	
 	arm32v7)
 		docker build ./ -t bayrell/bus_gateway:$VERSION-arm32v7 --file Dockerfile --build-arg ARCH=-arm32v7
-		docker push bayrell/bus_gateway:$VERSION-arm32v7
 	;;
 	
 	manifest)
+		rm -rf ~/.docker/manifests/docker.io_bus_gateway-*
+		
+		docker push bayrell/bus_gateway:$VERSION-amd64
+		docker push bayrell/bus_gateway:$VERSION-arm32v7
+		
 		docker manifest create --amend bayrell/bus_gateway:$VERSION \
 			bayrell/bus_gateway:$VERSION-amd64 \
 			bayrell/bus_gateway:$VERSION-arm32v7
