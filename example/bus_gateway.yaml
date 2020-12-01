@@ -1,9 +1,9 @@
 version: "3.7"
 
 services:
-    
-    bus_gateway:
-        image: bayrell/bus_gateway:0.1.0-20201126_142630
+
+    gateway:
+        image: bayrell/bus_gateway:0.2.0
         hostname: "{{.Service.Name}}.{{.Task.ID}}.local"
         volumes:
             - "../src:/var/www"
@@ -24,9 +24,7 @@ services:
                 constraints:
                     - node.labels.name == docker0
         networks:
-            - backend
             - cloud_admin
-            - cloud_router
         logging:
             driver: journald
 
@@ -34,10 +32,3 @@ networks:
     
     cloud_admin:
         external: true
-    
-    cloud_router:
-        external: true
-    
-    backend:
-        driver: overlay
-        attachable: true

@@ -22,6 +22,7 @@ import aio_pika
 import os
 import json
 import uuid
+import sys
 from aiohttp import web
 
 app = None
@@ -57,37 +58,44 @@ class App:
 	
 	async def create_web_server(self):
 		
-		# Create web server
-		self.web_runner = web.AppRunner(self.web_app)
-		await self.web_runner.setup()
-		site = web.TCPSite(self.web_runner, '0.0.0.0', 80)
-		await site.start()
-		
-		print("Created web server")
+		try:
+			# Create web server
+			self.web_runner = web.AppRunner(self.web_app)
+			await self.web_runner.setup()
+			site = web.TCPSite(self.web_runner, '0.0.0.0', 80)
+			await site.start()
+			
+			print("Created web server")
 	
-	
+		except BaseException as err:
+			print("Unexpected error: " + str(err))
+			sys.exit()
+
 	
 	async def connect_rabbit_mq(self):
 		
+		try:
+			AMQP_HOST = os.environ['AMQP_HOST']
+			AMQP_PORT = os.environ['AMQP_PORT']
+			
+			# Connect to RabbitMQ
+			self.amqp_connection = await aio_pika.connect_robust(
+				"amqp://" + AMQP_HOST + ":" + AMQP_PORT,
+				loop=loop
+			)
+			
+			# Create channel
+			self.amqp_channel = await self.amqp_connection.channel()
+			
+			# Create temporary queue
+			self.amqp_callback_queue = await self.amqp_channel.declare_queue(exclusive=True)
+			await self.amqp_callback_queue.consume(self.on_response, no_ack=True)
+			
+			print("Connected to RabbitMQ")
 		
-		AMQP_HOST = os.environ['AMQP_HOST']
-		AMQP_PORT = os.environ['AMQP_PORT']
-		
-		# Connect to RabbitMQ
-		self.amqp_connection = await aio_pika.connect_robust(
-			"amqp://" + AMQP_HOST + ":" + AMQP_PORT,
-			loop=loop
-		)
-		
-		# Create channel
-		self.amqp_channel = await self.amqp_connection.channel()
-		
-		# Create temporary queue
-		self.amqp_callback_queue = await self.amqp_channel.declare_queue(exclusive=True)
-		await self.amqp_callback_queue.consume(self.on_response, no_ack=True)
-		
-		print("Connected to RabbitMQ")
-
+		except BaseException as err:
+			print("Unexpected error: " + str(err))
+			sys.exit()
 
 
 	async def main(self):

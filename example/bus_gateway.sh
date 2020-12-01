@@ -8,11 +8,11 @@ RETVAL=0
 case "$1" in
 	
 	compose)
-		docker stack deploy -c bus_gateway.yaml cloud_os --with-registry-auth
+		docker stack deploy -c bus_gateway.yaml bus --with-registry-auth
 	;;
 	
 	delete)
-		docker service rm cloud_os_bus_gateway
+		docker service rm bus_gateway
 	;;
 	
 	recreate)

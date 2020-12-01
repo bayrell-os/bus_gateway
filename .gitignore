@@ -1,3 +1,6 @@
+/example/cloud.key
+/example/env.conf
+
 # Logs
 logs
 *.log
