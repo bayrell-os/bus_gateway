@@ -1,7 +1,7 @@
 ARG ARCH=
-FROM bayrell/alpine:3.11-1${ARCH}
+FROM bayrell/alpine:3.13-1${ARCH}
 
-RUN apk add python3 python3-dev gcc musl-dev; \
+RUN apk add python3 python3-dev gcc musl-dev py3-pip; \
 	pip3 install --upgrade pip; \
 	pip3 install aiohttp aio-pika uuid; \
 	apk del gcc musl-dev; \
