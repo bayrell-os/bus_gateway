@@ -1,5 +1,5 @@
 ARG ARCH=
-FROM bayrell/alpine:3.13-1${ARCH}
+FROM bayrell/alpine:3.12-1${ARCH}
 
 RUN apk add python3 python3-dev gcc musl-dev py3-pip; \
 	pip3 install --upgrade pip; \
